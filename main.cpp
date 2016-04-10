@@ -89,7 +89,7 @@ void ListDirectory(QDir dir, bool Recurse)
 int main(int argc, char *argv[])
 {
    QCoreApplication a(argc, argv);
-   QDir dir("/home/szymon/c/hello");
+   QDir dir("F:/ps2/");
   //ListDirectory(dir, true);
    //ListFilesInDirectory(dir);
    ListFilesInDirectory(dir);
