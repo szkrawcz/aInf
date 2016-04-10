@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include <QDir>
+#include <QCryptographicHash>
 #include <iostream>
 
 void ListFilesInDirectory(QDir dir);
@@ -92,8 +93,18 @@ int main(int argc, char *argv[])
    QDir dir("F:/ps2/");
   //ListDirectory(dir, true);
    //ListFilesInDirectory(dir);
-   ListFilesInDirectory(dir);
-   ListContentOfDirectory(dir, 1);
+   //---ListFilesInDirectory(dir);
+   //---ListContentOfDirectory(dir, 1);
+
+
+   QCryptographicHash crypto(QCryptographicHash::Sha1);
+   QFile file("F:/ps2/Bios/scph10000.bin");
+   file.open(QFile::ReadOnly);
+   while(!file.atEnd()){
+     crypto.addData(file.read(8192));
+   }
+   QByteArray hash = crypto.result();
+   std::cout<< QString(hash.toHex()).toStdString() <<std::endl;
    return 0;
    //return a.exec();
 }
