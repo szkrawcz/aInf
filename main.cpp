@@ -14,11 +14,11 @@ void ListDirectory(QDir dir, bool Recurse);
 int main(int argc, char *argv[])
 {
    QCoreApplication a(argc, argv);
-   QDir dir("F:/ps2/");
+   QDir dir("C:/Users/Administrator/Downloads");
   //ListDirectory(dir, true);
    //ListFilesInDirectory(dir);
-   //---ListFilesInDirectory(dir);
-   //---ListContentOfDirectory(dir, 1);
+   ListFilesInDirectory(dir);
+   ListContentOfDirectory(dir, 1);
   //  QFile plik("/home/szymon/c/main");
 
 
