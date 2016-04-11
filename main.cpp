@@ -20,8 +20,10 @@ int main(int argc, char *argv[])
    //---ListFilesInDirectory(dir);
    //---ListContentOfDirectory(dir, 1);
   //  QFile plik("/home/szymon/c/main");
-     QString FileName = "/home/szymon/c/main";
-     FileHash(FileName);
+
+
+   QString FileName = "/home/szymon/c/main";
+   FileHash(FileName);
 
 
    return 0;
