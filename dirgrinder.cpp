@@ -15,19 +15,19 @@ void FileHash(QString FileName )
     {
         while(!file.atEnd())
         {
-          crypto.addData(file.read(8192));
+         crypto.addData(file.read(8192));
          QByteArray hash = crypto.result();
-        std::cout<< QString(hash.toHex()).toStdString() <<std::endl;
+         std::cout<< QString(hash.toHex()).toStdString() <<std::endl;
        }
-     } else
+    }else
     {
-         std::cout << "file coulnt be open" << "\n";
+         std::cout << "file couldn't be open" << "\n";
     }
 }
 
 
 
-void ListContentOfDirectory(QDir dir, bool Recurse)
+void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash)
 {
     //ListFilesInDirectory(dir);
     dir.setFilter(  QDir::Hidden | QDir::NoSymLinks |QDir::AllDirs );
@@ -49,15 +49,15 @@ void ListContentOfDirectory(QDir dir, bool Recurse)
 
        std::cout << qPrintable(QString("%1").arg(fileInfo.absoluteFilePath()));
        std::cout << std::endl;
-       ListFilesInDirectory(fileInfo.absoluteFilePath());
+       ListFilesInDirectory(fileInfo.absoluteFilePath(),Hash);
        QDir NextDir(fileInfo.absoluteFilePath());
-       if (Recurse) ListContentOfDirectory(NextDir,Recurse);
+      if (Recurse) ListContentOfDirectory(NextDir,Recurse,Hash);
        }
     }
 
 }
 
-void ListFilesInDirectory(QDir dir)
+void ListFilesInDirectory(QDir dir, bool Hash)
 {
        dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
        dir.setSorting(QDir::Size | QDir::Reversed);
@@ -65,18 +65,12 @@ void ListFilesInDirectory(QDir dir)
        for (int i = 0; i < list.size(); ++i)
        {
           QFileInfo fileInfo = list.at(i);
-          QString str1 = fileInfo.fileName();
-          QString str2 = ".";
-          QString str3 = "..";
-          if (!str1.compare(str2) || !str1.compare(str3) )
+          if (fileInfo.isFile())
           {
-              // std::cout <<  " found . or .. ";
+              std::cout << qPrintable(QString("%1").arg(fileInfo.absoluteFilePath())) << std::endl;;
+              if (Hash) FileHash(fileInfo.absoluteFilePath());
           }
-          else
-          {
-          std::cout << qPrintable(QString("%1").arg(fileInfo.absoluteFilePath()));
-          std::cout << std::endl;
-          }
+
        }
 }
 
@@ -89,17 +83,9 @@ void ListDirectory(QDir dir, bool Recurse)
     for (int i = 0; i < list.size(); ++i)
     {
        QFileInfo fileInfo = list.at(i);
-       QString str1 = fileInfo.fileName();
-       QString str2 = ".";
-       QString str3 = "..";
-       if (!str1.compare(str2) || !str1.compare(str3) )
+       if (fileInfo.isFile())
        {
-           // std::cout <<  " found . or .. ";
-       }
-       else
-       {
-       std::cout << qPrintable(QString("%1").arg(fileInfo.absoluteFilePath()));
-       std::cout << std::endl;
+       std::cout << qPrintable(QString("%1").arg(fileInfo.absoluteFilePath()))  << std::endl;
        QDir NextDir(fileInfo.absoluteFilePath());
        if (Recurse) ListDirectory(NextDir,1);
        }
