@@ -4,26 +4,22 @@
 #include <iostream>
 #include "dirgrinder.h"
 
-
-
-void FileHash(QString FileName )
+QString GetFileMd5hash(QString path)
 {
-    QFile file(FileName);
-    QCryptographicHash crypto(QCryptographicHash::Sha1);
-
-    if (file.open(QFile::ReadOnly))
+    QFile file(path);
+    if(file.open(QIODevice::ReadOnly))
     {
-        while(!file.atEnd())
-        {
-         crypto.addData(file.read(8192));
-         QByteArray hash = crypto.result();
-         std::cout<< QString(hash.toHex()).toStdString() <<std::endl;
-       }
-    }else
-    {
-         std::cout << "file couldn't be open" << "\n";
+        QString hash = QCryptographicHash::hash(file.readAll(), QCryptographicHash::Md5).toHex().constData();
+        file.close();
+        std::cout <<  hash.toStdString() << "\n";
+        return hash;
     }
+
+    return "error geting md5 hash";
 }
+
+
+
 
 
 
@@ -47,7 +43,7 @@ void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash)
        else
        {
 
-       std::cout << qPrintable(QString("%1").arg(fileInfo.absoluteFilePath()));
+       std::cout << qPrintable(QString("%1  ").arg(fileInfo.absoluteFilePath()));
        std::cout << std::endl;
        ListFilesInDirectory(fileInfo.absoluteFilePath(),Hash);
        QDir NextDir(fileInfo.absoluteFilePath());
@@ -67,8 +63,8 @@ void ListFilesInDirectory(QDir dir, bool Hash)
           QFileInfo fileInfo = list.at(i);
           if (fileInfo.isFile())
           {
-              std::cout << qPrintable(QString("%1").arg(fileInfo.absoluteFilePath())) << std::endl;;
-              if (Hash) FileHash(fileInfo.absoluteFilePath());
+              std::cout << qPrintable(QString("%1 ").arg(fileInfo.absoluteFilePath()));// << std::endl;;
+              if (Hash) GetFileMd5hash(fileInfo.absoluteFilePath());
           }
 
        }

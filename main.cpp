@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
    timer.start();
 
    QCoreApplication a(argc, argv);
-   QDir dir("c:/test/");
+   QDir dir("C:/");
   //ListDirectory(dir, true);
    //ListFilesInDirectory(dir);
    ListFilesInDirectory(dir,1);
@@ -28,8 +28,9 @@ int main(int argc, char *argv[])
   //  QFile plik("/home/szymon/c/main");
 
 
-   QString FileName = "/home/szymon/c/main";
-   FileHash(FileName);
+   QString FileName = "C:/test/MaintenanceTool.exe";
+ //  FileHash(FileName);
+ //  HashFile(FileName);
 
    qDebug() << timer.elapsed();
    return 0;
