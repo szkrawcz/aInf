@@ -3,6 +3,42 @@
 #include <QCryptographicHash>
 #include <iostream>
 #include "dirgrinder.h"
+#include <QCoreApplication>
+#include <QStringList>
+#include <iostream>
+#include <QTextStream>
+#include <QDebug>
+
+
+
+
+
+void test(void) //play around with QMultiMap
+
+{
+    QTextStream cout(stdout, QIODevice::WriteOnly);
+    QMultiMap<QString, QString > FileHash1, FileDate;
+    FileHash1.insert("c:\file.txt", "hash1 of file.txt");
+    FileDate.insert("c:\file.txt","10/11/2015");
+
+    FileHash1.insert("c:\file1.txt", "hash2");
+    FileHash1.insert("c:\file2.txt", "hash3");
+
+
+     //list all files hash
+     QSet<QString> keys = QSet<QString> :: fromList(FileHash1.keys());
+     foreach (const QString &keyvalue, keys)
+     {   //list all keys  . In this case list all files.
+         qDebug() << keyvalue;
+        QList<QString> values2 = FileHash1.values(keyvalue);
+        for (int i = 0; i < values2.size(); ++i)
+            cout << values2.at(i) << endl;
+     }
+
+
+
+
+}
 
 QString GetFileMd5hash(QString path)
 {

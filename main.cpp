@@ -16,23 +16,27 @@ void ListDirectory(QDir dir, bool Recurse);
 
 int main(int argc, char *argv[])
 {
+   QCoreApplication a(argc, argv);
+
+   //counting time of execution
    QElapsedTimer timer;
    timer.start();
 
-   QCoreApplication a(argc, argv);
-   QDir dir("C:/");
-  //ListDirectory(dir, true);
-   //ListFilesInDirectory(dir);
+
+   test();
+
+  /* QDir dir("C:/");
    ListFilesInDirectory(dir,1);
-   ListContentOfDirectory(dir, 1,1);
-  //  QFile plik("/home/szymon/c/main");
+   ListContentOfDirectory(dir, 1,1);*/
 
 
-   QString FileName = "C:/test/MaintenanceTool.exe";
- //  FileHash(FileName);
- //  HashFile(FileName);
 
-   qDebug() << timer.elapsed();
+
+
+  /*  QString FileName = "C:/test/MaintenanceTool.exe";
+   GetFileMd5hash(FileName); */
+   qDebug() << "\n";
+   qDebug() << "execution time = " << timer.elapsed();
    return 0;
    //return a.exec();
 }
