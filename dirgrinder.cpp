@@ -8,9 +8,19 @@
 #include <iostream>
 #include <QTextStream>
 #include <QDebug>
+#include <QDate>
 
 
 
+
+ QMultiMap<QString,FileAttributes  > test2(void)
+ {
+ QMultiMap<QString, FileAttributes > fileAtt;
+
+
+ return cos;
+
+ }
 
 
 void test(void) //play around with QMultiMap
@@ -34,11 +44,8 @@ void test(void) //play around with QMultiMap
         for (int i = 0; i < values2.size(); ++i)
             cout << values2.at(i) << endl;
      }
-
-
-
-
 }
+
 
 QString GetFileMd5hash(QString path)
 {
@@ -99,7 +106,9 @@ void ListFilesInDirectory(QDir dir, bool Hash)
           QFileInfo fileInfo = list.at(i);
           if (fileInfo.isFile())
           {
-              std::cout << qPrintable(QString("%1 ").arg(fileInfo.absoluteFilePath()));// << std::endl;;
+              QDateTime date = fileInfo.lastModified();
+              QString lastModified = date.toString();
+              std::cout << qPrintable(QString("%1 lastModified=%2 ").arg(fileInfo.absoluteFilePath()).arg(lastModified));// << std::endl;;
               if (Hash) GetFileMd5hash(fileInfo.absoluteFilePath());
           }
 

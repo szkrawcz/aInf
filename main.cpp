@@ -25,9 +25,9 @@ int main(int argc, char *argv[])
 
    test();
 
-  /* QDir dir("C:/");
+   QDir dir("C:/test");
    ListFilesInDirectory(dir,1);
-   ListContentOfDirectory(dir, 1,1);*/
+  // ListContentOfDirectory(dir, 1,1);*/
 
 
 
