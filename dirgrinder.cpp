@@ -12,6 +12,8 @@
 
 QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
 {
+    extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+    qt_ntfs_permission_lookup++; // turn checking on
     QMultiMap<QString, FileAttributes> fileAttHashTable; //making hash table to store file attributes
     dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
     dir.setSorting(QDir::Name);
@@ -22,15 +24,28 @@ QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
        if (fileInfo.isFile())
        {
            FileAttributes tempFileAttributes;
-           tempFileAttributes.lastModified = fileInfo.lastModified();
-
            QDateTime date = fileInfo.lastModified();
-           //QString lastModified = date.toString();
-           fileAttHashTable.insert(fileInfo.absoluteFilePath(),tempFileAttributes);
-         //  std::cout << qPrintable(QString("%1 lastModified=%2 ").arg(fileInfo.absoluteFilePath()).arg(lastModified));// << std::endl;;
-           qDebug() << "lastModified" << tempFileAttributes.lastModified;
+           QString lastModified = date.toString();
 
-           if (Hash) GetFileMd5hash(fileInfo.absoluteFilePath());
+            tempFileAttributes.absoluteFilePath = fileInfo.absoluteFilePath();
+            tempFileAttributes.fileName = fileInfo.fileName();
+            tempFileAttributes.filePath= fileInfo.path();
+            tempFileAttributes.md5Hash = GetFileMd5hash(fileInfo.absoluteFilePath());
+            tempFileAttributes.lastModified  = fileInfo.lastModified();
+            tempFileAttributes.lastRead = fileInfo.lastRead();
+            tempFileAttributes.created = fileInfo.created();
+            tempFileAttributes.isHidden =  fileInfo.isHidden();
+            tempFileAttributes.size = fileInfo.size();
+            tempFileAttributes.owner = fileInfo.owner();
+           fileAttHashTable.insert(fileInfo.absoluteFilePath(),tempFileAttributes);
+         //  std::cout << qPrintable(QString("lastModified=%1|").arg(fileInfo.absoluteFilePath()).arg(lastModified));// << std::endl;;
+           std::cout <<  qPrintable(QString("lastModified=%1|").arg(lastModified));
+           std::cout <<  qPrintable(QString("md5Hash=%1|").arg(tempFileAttributes.md5Hash));
+           std::cout <<  qPrintable(QString("owner=%1|").arg(tempFileAttributes.owner));
+           std::cout <<  qPrintable(QString("absoluteFilePath=%1\n").arg(tempFileAttributes.absoluteFilePath));
+
+          // if (Hash) GetFileMd5hash(fileInfo.absoluteFilePath());
+           //tempFileAttributes = null;
        }
 
     }
@@ -44,8 +59,8 @@ QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
 FileAttributes file1Attr;
 file1Attr.fileName = "file name example";
 //inserting valuse to hash table
-fileAttHashTable.insert("c:/file1",file1Attr);
-fileAttHashTable.insert("c:/file2",file1Attr);
+//fileAttHashTable.insert("c:/file1",file1Attr);
+//fileAttHashTable.insert("c:/file2",file1Attr);
 
 
 //list all files hash
@@ -54,7 +69,7 @@ foreach (const QString keyvalue, keys)
 {   //list all keys  . In this case list all files.
     FileAttributes tempAttributes ;
     tempAttributes = fileAttHashTable.value(keyvalue);
-    qDebug() << "keyvalue " << keyvalue << "attr" << tempAttributes.fileName;
+    //qDebug() << "keyvalue " << keyvalue << "attr" << tempAttributes.fileName;
 
 
 }
@@ -127,7 +142,7 @@ QString GetFileMd5hash(QString path)
     {
         QString hash = QCryptographicHash::hash(file.readAll(), QCryptographicHash::Md5).toHex().constData();
         file.close();
-        std::cout <<  hash.toStdString() << "\n";
+      //  std::cout <<  hash.toStdString() << "\n";
         return hash;
     }
 
@@ -161,7 +176,7 @@ void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash)
 
        std::cout << qPrintable(QString("%1  ").arg(fileInfo.absoluteFilePath()));
        std::cout << std::endl;
-       ListFilesInDirectory(fileInfo.absoluteFilePath(),Hash);
+       ListFilesInDirectoryTest(fileInfo.absoluteFilePath(),Hash);
        QDir NextDir(fileInfo.absoluteFilePath());
       if (Recurse) ListContentOfDirectory(NextDir,Recurse,Hash);
        }

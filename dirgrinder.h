@@ -23,4 +23,5 @@ struct FileAttributes
     QDateTime created;
     bool isHidden;
     qint64 size;
+    QString owner;
 };
