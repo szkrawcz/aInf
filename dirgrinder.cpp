@@ -20,17 +20,18 @@
  file1Attr.fileName = "file name example";
  //inserting valuse to hash table
  fileAttHashTable.insert("c:/file1",file1Attr);
-
+ fileAttHashTable.insert("c:/file2",file1Attr);
 
 
  //list all files hash
  QSet<QString> keys = QSet<QString> :: fromList(fileAttHashTable.keys());
- foreach (const QString &keyvalue, keys)
+ foreach (const QString keyvalue, keys)
  {   //list all keys  . In this case list all files.
+     FileAttributes tempAttributes ;
+     tempAttributes = fileAttHashTable.value(keyvalue);
+     qDebug() << "keyvalue " << keyvalue << "attr" << tempAttributes.fileName;
 
-     qDebug() << "keyvalue " << keyvalue << "\n";
-
-   /* QList<QString> values2 = FileHash1.values(keyvalue);
+   /*< QList<QString> values2 = FileHash1.values(keyvalue);
     for (int i = 0; i < values2.size(); ++i)
         cout << values2.at(i) << endl;
    */

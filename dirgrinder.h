@@ -1,11 +1,14 @@
 #include <QCoreApplication>
 #include <Qdate>
+
+struct FileAttributes;
 void ListFilesInDirectory(QDir dir, bool Hash);
+QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash);
 void ListDirectory(QDir dir, bool Recurse);
 void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash);
 QString HashFile(QString path);
 void test(void);
-struct FileAttributes;
+
 QMultiMap<QString,FileAttributes>   test2(void);
 
 struct FileAttributes
