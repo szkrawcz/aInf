@@ -10,7 +10,60 @@
 #include <QDebug>
 #include <QDate>
 
+QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
+{
+    QMultiMap<QString, FileAttributes> fileAttHashTable; //making hash table to store file attributes
+    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+    dir.setSorting(QDir::Name);
+    QFileInfoList list = dir.entryInfoList();
+    for (int i = 0; i < list.size(); ++i)
+    {
+       QFileInfo fileInfo = list.at(i);
+       if (fileInfo.isFile())
+       {
+           FileAttributes tempFileAttributes;
+           tempFileAttributes.lastModified = fileInfo.lastModified();
 
+           QDateTime date = fileInfo.lastModified();
+           //QString lastModified = date.toString();
+           fileAttHashTable.insert(fileInfo.absoluteFilePath(),tempFileAttributes);
+         //  std::cout << qPrintable(QString("%1 lastModified=%2 ").arg(fileInfo.absoluteFilePath()).arg(lastModified));// << std::endl;;
+           qDebug() << "lastModified" << tempFileAttributes.lastModified;
+
+           if (Hash) GetFileMd5hash(fileInfo.absoluteFilePath());
+       }
+
+    }
+
+
+
+
+
+
+
+FileAttributes file1Attr;
+file1Attr.fileName = "file name example";
+//inserting valuse to hash table
+fileAttHashTable.insert("c:/file1",file1Attr);
+fileAttHashTable.insert("c:/file2",file1Attr);
+
+
+//list all files hash
+QSet<QString> keys = QSet<QString> :: fromList(fileAttHashTable.keys());
+foreach (const QString keyvalue, keys)
+{   //list all keys  . In this case list all files.
+    FileAttributes tempAttributes ;
+    tempAttributes = fileAttHashTable.value(keyvalue);
+    qDebug() << "keyvalue " << keyvalue << "attr" << tempAttributes.fileName;
+
+
+}
+
+
+return fileAttHashTable;
+
+
+}
 
 
  QMultiMap<QString,FileAttributes>   test2(void)
