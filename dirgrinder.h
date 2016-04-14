@@ -5,7 +5,8 @@ void ListDirectory(QDir dir, bool Recurse);
 void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash);
 QString HashFile(QString path);
 void test(void);
-
+struct FileAttributes;
+QMultiMap<QString,FileAttributes>   test2(void);
 
 struct FileAttributes
 {

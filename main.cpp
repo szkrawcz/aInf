@@ -23,11 +23,11 @@ int main(int argc, char *argv[])
    timer.start();
 
 
-   test();
+   test2();
 
-   QDir dir("C:/test");
-   ListFilesInDirectory(dir,1);
-  // ListContentOfDirectory(dir, 1,1);*/
+   QDir dir("C:/");
+   //ListFilesInDirectory(dir,1);
+   //ListContentOfDirectory(dir, 1,1);
 
 
 

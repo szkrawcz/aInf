@@ -13,12 +13,31 @@
 
 
 
- QMultiMap<QString,FileAttributes  > test2(void)
+ QMultiMap<QString,FileAttributes>   test2(void)
  {
- QMultiMap<QString, FileAttributes > fileAtt;
+ QMultiMap<QString, FileAttributes> fileAttHashTable;
+ FileAttributes file1Attr;
+ file1Attr.fileName = "file name example";
+ //inserting valuse to hash table
+ fileAttHashTable.insert("c:/file1",file1Attr);
 
 
- return cos;
+
+ //list all files hash
+ QSet<QString> keys = QSet<QString> :: fromList(fileAttHashTable.keys());
+ foreach (const QString &keyvalue, keys)
+ {   //list all keys  . In this case list all files.
+
+     qDebug() << "keyvalue " << keyvalue << "\n";
+
+   /* QList<QString> values2 = FileHash1.values(keyvalue);
+    for (int i = 0; i < values2.size(); ++i)
+        cout << values2.at(i) << endl;
+   */
+}
+
+
+ return fileAttHashTable;
 
  }
 
