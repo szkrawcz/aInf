@@ -3,6 +3,7 @@
 #include <QCryptographicHash>
 #include <iostream>
 #include "dirgrinder.h"
+#include "sqlgrinder.h"
 #include <QCoreApplication>
 #include <QStringList>
 #include <iostream>
@@ -39,11 +40,11 @@ QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
             tempFileAttributes.owner = fileInfo.owner();
            fileAttHashTable.insert(fileInfo.absoluteFilePath(),tempFileAttributes);
          //  std::cout << qPrintable(QString("lastModified=%1|").arg(fileInfo.absoluteFilePath()).arg(lastModified));// << std::endl;;
-           std::cout <<  qPrintable(QString("lastModified=%1|").arg(lastModified));
+         /*  std::cout <<  qPrintable(QString("lastModified=%1|").arg(lastModified));
            std::cout <<  qPrintable(QString("md5Hash=%1|").arg(tempFileAttributes.md5Hash));
            std::cout <<  qPrintable(QString("owner=%1|").arg(tempFileAttributes.owner));
            std::cout <<  qPrintable(QString("absoluteFilePath=%1\n").arg(tempFileAttributes.absoluteFilePath));
-
+            */
           // if (Hash) GetFileMd5hash(fileInfo.absoluteFilePath());
            //tempFileAttributes = null;
        }
@@ -63,7 +64,7 @@ file1Attr.fileName = "file name example";
 //fileAttHashTable.insert("c:/file2",file1Attr);
 
 
-//list all files hash
+//list all files from hash table
 QSet<QString> keys = QSet<QString> :: fromList(fileAttHashTable.keys());
 foreach (const QString keyvalue, keys)
 {   //list all keys  . In this case list all files.
@@ -176,7 +177,9 @@ void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash)
 
        std::cout << qPrintable(QString("%1  ").arg(fileInfo.absoluteFilePath()));
        std::cout << std::endl;
-       ListFilesInDirectoryTest(fileInfo.absoluteFilePath(),Hash);
+       QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,Hash);
+       copyFilesAttHashTableToSqlLite(temp);
+      // ListFilesInDirectoryTest(fileInfo.absoluteFilePath(),Hash);
        QDir NextDir(fileInfo.absoluteFilePath());
       if (Recurse) ListContentOfDirectory(NextDir,Recurse,Hash);
        }

@@ -5,7 +5,7 @@
 #include "dirgrinder.h"
 #include <QDebug>
 #include <QElapsedTimer>
-
+#include <sqlgrinder.h>
 
 void ListFilesInDirectory(QDir dir);
 void ListDirectory(QDir dir, bool Recurse);
@@ -25,9 +25,10 @@ int main(int argc, char *argv[])
 
   // test2();
 
-   QDir dir("C:/test");
-   ListFilesInDirectoryTest(dir,1);
-   ListContentOfDirectory(dir, 1,1);
+   QDir dir("C:/windows/system32");
+   QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,1);
+   qDebug() <<  copyFilesAttHashTableToSqlLite(temp);
+  // ListContentOfDirectory(dir, 1,1);
 
 
 
