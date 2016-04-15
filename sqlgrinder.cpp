@@ -1,3 +1,4 @@
+#include <QtSql>
 #include <QCoreApplication>
 #include <QDir>
 #include <QCryptographicHash>
@@ -9,26 +10,26 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QDate>
-#include <QtSql>
 
 
-bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHashTable)
+
+bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHashTable,QSqlDatabase db )
 {
 
-    QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE" );
+
     try{
     db.setDatabaseName( "./datagrinder.db" );
     if(! db.open() )
             {
              db.close();
-             return 0; //something wrong false
+             return 1; //something wrong false
             }
 
     } catch (...)
     {
 
     }
-
+    db.open();
     qDebug( "Connected to SqlLite DB" );
     QSqlQuery qry;
     QString sqlCmd;
@@ -76,10 +77,11 @@ bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHas
 
          if( !qry.exec() )
       qDebug() << qry.lastError();
-    //else
-     // qDebug( "Inserted!" );
+    else
+     qDebug( "Inserted!" );
     } //end foreach
 
     db.close();
-    return 1; //all ok true
+
+    return 0; //all ok true
 }

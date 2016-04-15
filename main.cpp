@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QElapsedTimer>
 #include <sqlgrinder.h>
+#include <QtSql>
 
 void ListFilesInDirectory(QDir dir);
 void ListDirectory(QDir dir, bool Recurse);
@@ -24,11 +25,15 @@ int main(int argc, char *argv[])
 
 
   // test2();
+   QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE" );
 
-   QDir dir("C:/windows/system32");
-   QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,1);
-   qDebug() <<  copyFilesAttHashTableToSqlLite(temp);
-  // ListContentOfDirectory(dir, 1,1);
+   QDir dir("C:/windows");
+   //QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,1);
+   //qDebug() <<  copyFilesAttHashTableToSqlLite(temp);
+   //ListContentOfDirectory(dir, 1,1);
+
+
+   scanDir(dir,db );
 
 
 

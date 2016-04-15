@@ -1,3 +1,4 @@
+#include <QtSql>
 #include <QCoreApplication>
 #include <QDir>
 #include <QCryptographicHash>
@@ -10,6 +11,9 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QDate>
+
+
+
 
 QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
 {
@@ -53,9 +57,7 @@ QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
 
 
 
-
-
-
+/*
 
 FileAttributes file1Attr;
 file1Attr.fileName = "file name example";
@@ -74,7 +76,7 @@ foreach (const QString keyvalue, keys)
 
 
 }
-
+*/
 
 return fileAttHashTable;
 
@@ -175,13 +177,19 @@ void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash)
        else
        {
 
-       std::cout << qPrintable(QString("%1  ").arg(fileInfo.absoluteFilePath()));
-       std::cout << std::endl;
-       QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,Hash);
-       copyFilesAttHashTableToSqlLite(temp);
+    //   std::cout << qPrintable(QString("%1  ").arg(fileInfo.absoluteFilePath()));
+     //  std::cout << std::endl;
+       //QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,Hash);
+       ListFilesInDirectory(dir,Hash);
+       //copyFilesAttHashTableToSqlLite(temp);
       // ListFilesInDirectoryTest(fileInfo.absoluteFilePath(),Hash);
        QDir NextDir(fileInfo.absoluteFilePath());
-      if (Recurse) ListContentOfDirectory(NextDir,Recurse,Hash);
+     //  qDebug() << "\nNext dir " << NextDir;
+       if (Recurse)
+           {
+              ListContentOfDirectory(NextDir,Recurse,Hash);
+              ListFilesInDirectory(dir,Hash);
+           }
        }
     }
 
@@ -199,13 +207,34 @@ void ListFilesInDirectory(QDir dir, bool Hash)
           {
               QDateTime date = fileInfo.lastModified();
               QString lastModified = date.toString();
-              std::cout << qPrintable(QString("%1 lastModified=%2 ").arg(fileInfo.absoluteFilePath()).arg(lastModified));// << std::endl;;
+              std::cout << qPrintable(QString("%1 lastModified=%2 ").arg(fileInfo.absoluteFilePath()).arg(lastModified)) << std::endl;
               if (Hash) GetFileMd5hash(fileInfo.absoluteFilePath());
           }
 
        }
 }
 
+
+
+void scanDir(QDir dir,   QSqlDatabase db )
+{
+    dir.setNameFilters(QStringList("*.nut"));
+    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+
+    qDebug() << "Scanning: " << dir.path();
+
+    QStringList fileList = dir.entryList();
+    QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir.path(),1);
+    qDebug() <<  copyFilesAttHashTableToSqlLite(temp,db);
+
+    dir.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+    QStringList dirList = dir.entryList();
+    for (int i=0; i<dirList.size(); ++i)
+    {
+        QString newPath = QString("%1/%2").arg(dir.absolutePath()).arg(dirList.at(i));
+        scanDir(QDir(newPath),db);
+    }
+}
 // ListDirectory list for given path
 void ListDirectory(QDir dir, bool Recurse)
 {

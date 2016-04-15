@@ -2,4 +2,5 @@
 #define SQLGRINDER_H
 
 #endif // SQLGRINDER_H
-bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHashTable);
+#include <QtSql>
+bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHashTable,QSqlDatabase db);
