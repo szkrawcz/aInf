@@ -13,6 +13,16 @@
 
 
 
+QString sqlEscape(QString boundValue)
+{
+    boundValue.replace('@', "@@");
+    boundValue.replace('_', "@_");
+    boundValue.replace('%', "@%");
+    boundValue.replace("'", "''");
+    return boundValue;
+}
+
+
 bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHashTable,QSqlDatabase db )
 {
    QString dateFormat = "yyyy-MM-dd hh:mm:ss";
@@ -51,12 +61,18 @@ bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHas
      //   qDebug() << tempAttributes.absoluteFilePath;
   //    qDebug() << "recived file info  " << QString(tempAttributes.absoluteFilePath);
     //  sqlCmd = "INSERT INTO filesScannedTemp ( absoluteFilePath, fileName) VALUES ('"  + tempAttributes.absoluteFilePath + "', 'file.txt')" );
-        sqlCmd = "INSERT INTO filesScannedTemp ( absoluteFilePath,fileName,filePath,md5Hash,lastModified,lastRead,created,isHidden,size,owner) "
-                 "VALUES (:absoluteFilePath,:fileName,:filePath,:md5Hash,:lastModified,:lastRead,:created,:isHidden,:size,:owner)";
-        qry.bindValue(":absoluteFilePath", QString(tempAttributes.absoluteFilePath));
-        qry.bindValue(":fileName", QString(tempAttributes.fileName));
-
-
+         qry.prepare ( "INSERT INTO filesScannedTemp ( absoluteFilePath,fileName,filePath,md5Hash,lastModified,lastRead,created,isHidden,size,owner) "
+                 "VALUES (:absoluteFilePath,:fileName,:filePath,:md5Hash,:lastModified,:lastRead,:created,:isHidden,:size,:owner)");
+        qry.bindValue(":absoluteFilePath", QString(sqlEscape(tempAttributes.absoluteFilePath)));
+        qry.bindValue(":fileName", QString(sqlEscape(tempAttributes.fileName)));
+        qry.bindValue(":filePath", QString(sqlEscape(tempAttributes.filePath)));
+        qry.bindValue(":md5Hash",QString(tempAttributes.md5Hash));
+        qry.bindValue(":lastModified",QString(tempAttributes.lastModified.toString(dateFormat)));
+        qry.bindValue(":lastRead",QString(tempAttributes.lastRead.toString(dateFormat)));
+        qry.bindValue(":created",QString(tempAttributes.created.toString(dateFormat)));
+        qry.bindValue(":isHidden",QString::number(tempAttributes.isHidden));
+        qry.bindValue(":size",QString::number(tempAttributes.size));
+        qry.bindValue(":owner",QString(tempAttributes.owner));
         /*          + QString(tempAttributes.absoluteFilePath) + "',"
                   + "'" + QString(tempAttributes.fileName) + "',"
                   + "'" + QString(tempAttributes.filePath) + "',"
@@ -80,7 +96,7 @@ bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHas
 
 
         //  qDebug() << sqlCmd;
-         qry.prepare( sqlCmd );
+       //  qry.prepare( sqlCmd );
        //tracing insert time
          QElapsedTimer timer;
          timer.start();

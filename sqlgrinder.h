@@ -4,3 +4,4 @@
 #endif // SQLGRINDER_H
 #include <QtSql>
 bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHashTable,QSqlDatabase db);
+QString sqlEscape(QString boundValue);
