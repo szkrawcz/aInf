@@ -1,4 +1,3 @@
-#include <QtSql>
 #include <QCoreApplication>
 #include <QDir>
 #include <QCryptographicHash>
@@ -11,6 +10,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QDate>
+#include <QtSql>
 
 
 
@@ -42,100 +42,13 @@ QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
             tempFileAttributes.isHidden =  fileInfo.isHidden();
             tempFileAttributes.size = fileInfo.size();
             tempFileAttributes.owner = fileInfo.owner();
-           fileAttHashTable.insert(fileInfo.absoluteFilePath(),tempFileAttributes);
-         //  std::cout << qPrintable(QString("lastModified=%1|").arg(fileInfo.absoluteFilePath()).arg(lastModified));// << std::endl;;
-         /*  std::cout <<  qPrintable(QString("lastModified=%1|").arg(lastModified));
-           std::cout <<  qPrintable(QString("md5Hash=%1|").arg(tempFileAttributes.md5Hash));
-           std::cout <<  qPrintable(QString("owner=%1|").arg(tempFileAttributes.owner));
-           std::cout <<  qPrintable(QString("absoluteFilePath=%1\n").arg(tempFileAttributes.absoluteFilePath));
-            */
-          // if (Hash) GetFileMd5hash(fileInfo.absoluteFilePath());
-           //tempFileAttributes = null;
+            fileAttHashTable.insert(fileInfo.absoluteFilePath(),tempFileAttributes);
        }
 
     }
-
-
-
-/*
-
-FileAttributes file1Attr;
-file1Attr.fileName = "file name example";
-//inserting valuse to hash table
-//fileAttHashTable.insert("c:/file1",file1Attr);
-//fileAttHashTable.insert("c:/file2",file1Attr);
-
-
-//list all files from hash table
-QSet<QString> keys = QSet<QString> :: fromList(fileAttHashTable.keys());
-foreach (const QString keyvalue, keys)
-{   //list all keys  . In this case list all files.
-    FileAttributes tempAttributes ;
-    tempAttributes = fileAttHashTable.value(keyvalue);
-    //qDebug() << "keyvalue " << keyvalue << "attr" << tempAttributes.fileName;
-
-
-}
-*/
-
 return fileAttHashTable;
-
-
 }
 
-
- QMultiMap<QString,FileAttributes>   test2(void)
- {
- QMultiMap<QString, FileAttributes> fileAttHashTable;
- FileAttributes file1Attr;
- file1Attr.fileName = "file name example";
- //inserting valuse to hash table
- fileAttHashTable.insert("c:/file1",file1Attr);
- fileAttHashTable.insert("c:/file2",file1Attr);
-
-
- //list all files hash
- QSet<QString> keys = QSet<QString> :: fromList(fileAttHashTable.keys());
- foreach (const QString keyvalue, keys)
- {   //list all keys  . In this case list all files.
-     FileAttributes tempAttributes ;
-     tempAttributes = fileAttHashTable.value(keyvalue);
-     qDebug() << "keyvalue " << keyvalue << "attr" << tempAttributes.fileName;
-
-   /*< QList<QString> values2 = FileHash1.values(keyvalue);
-    for (int i = 0; i < values2.size(); ++i)
-        cout << values2.at(i) << endl;
-   */
-}
-
-
- return fileAttHashTable;
-
- }
-
-
-void test(void) //play around with QMultiMap
-
-{
-    QTextStream cout(stdout, QIODevice::WriteOnly);
-    QMultiMap<QString, QString > FileHash1, FileDate;
-    FileHash1.insert("c:\file.txt", "hash1 of file.txt");
-    FileDate.insert("c:\file.txt","10/11/2015");
-
-    FileHash1.insert("c:\file1.txt", "hash2");
-    FileHash1.insert("c:\file2.txt", "hash3");
-
-
-     //list all files hash
-     QSet<QString> keys = QSet<QString> :: fromList(FileHash1.keys());
-     foreach (const QString &keyvalue, keys)
-     {   //list all keys  . In this case list all files.
-         qDebug() << keyvalue;
-        QList<QString> values2 = FileHash1.values(keyvalue);
-        for (int i = 0; i < values2.size(); ++i)
-            cout << values2.at(i) << endl;
-     }
-}
 
 
 QString GetFileMd5hash(QString path)
@@ -143,10 +56,10 @@ QString GetFileMd5hash(QString path)
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
-        //reading hash file is limited to 20MB = 41943040 bytes
+        //reading hash file is limited to 20MB = 2621440 bytes
         QString hash = QCryptographicHash::hash(file.read(2621440), QCryptographicHash::Md5).toHex().constData();
         file.close();
-      //  std::cout <<  hash.toStdString() << "\n";
+        //std::cout <<  hash.toStdString() << "\n";
         return hash;
     }
 
@@ -177,15 +90,8 @@ void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash)
        }
        else
        {
-
-    //   std::cout << qPrintable(QString("%1  ").arg(fileInfo.absoluteFilePath()));
-     //  std::cout << std::endl;
-       //QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,Hash);
        ListFilesInDirectory(dir,Hash);
-       //copyFilesAttHashTableToSqlLite(temp);
-      // ListFilesInDirectoryTest(fileInfo.absoluteFilePath(),Hash);
        QDir NextDir(fileInfo.absoluteFilePath());
-     //  qDebug() << "\nNext dir " << NextDir;
        if (Recurse)
            {
               ListContentOfDirectory(NextDir,Recurse,Hash);
@@ -221,9 +127,6 @@ void scanDir(QDir dir,   QSqlDatabase db, QDateTime currentDateTime )
 {
    // dir.setNameFilters(QStringList("*.nut"));
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks| QDir::Hidden );
-
-
-   // qDebug() << "Scanning: " << dir.path();
 
     QStringList fileList = dir.entryList();
     QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir.path(),0);

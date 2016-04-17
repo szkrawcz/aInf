@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
    timer.start();
 
 
-  // test2();
    QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE" );
    //try{
    db.setDatabaseName( "./datagrinder.db" );
@@ -40,23 +39,16 @@ int main(int argc, char *argv[])
    }*/
    db.open();
    db.transaction();
-   QDir dir("C:/test");
-   //QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,1);
-   //qDebug() <<  copyFilesAttHashTableToSqlLite(temp);
-   //ListContentOfDirectory(dir, 1,1);
 
+   QDir dir("c:/test");
    QDateTime currentDateTime;
-    currentDateTime =   currentDateTime.currentDateTime();
-   scanDir(dir,db,currentDateTime);
+   scanDir(dir,db,currentDateTime.currentDateTime());
 
 
    db.commit();
    db.close();
    float executionTime = float(timer.elapsed()/1000);
-  /*  QString FileName = "C:/test/MaintenanceTool.exe";
-   GetFileMd5hash(FileName); */
    qDebug() << "\n";
    qDebug() << "execution time s = " << executionTime;
    return 0;
-   //return a.exec();
 }

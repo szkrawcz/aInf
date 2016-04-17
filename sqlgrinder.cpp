@@ -58,12 +58,9 @@ bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHas
         FileAttributes tempAttributes ;
         tempAttributes = fileAttHashTable.value(keyvalue);
 
-        //qDebug() << "keyvalue " << keyvalue << "attr" << tempAttributes.fileName;
-     //   qDebug() << tempAttributes.absoluteFilePath;
-  //    qDebug() << "recived file info  " << QString(tempAttributes.absoluteFilePath);
-    //  sqlCmd = "INSERT INTO filesScannedTemp ( absoluteFilePath, fileName) VALUES ('"  + tempAttributes.absoluteFilePath + "', 'file.txt')" );
-         qry.prepare ( "INSERT INTO filesScannedTemp ( absoluteFilePath,fileName,filePath,md5Hash,lastModified,lastRead,created,isHidden,size,owner,reportCreated) "
+        qry.prepare ( "INSERT INTO filesScannedTemp ( absoluteFilePath,fileName,filePath,md5Hash,lastModified,lastRead,created,isHidden,size,owner,reportCreated) "
                  "VALUES (:absoluteFilePath,:fileName,:filePath,:md5Hash,:lastModified,:lastRead,:created,:isHidden,:size,:owner,:reportCreated)");
+
         qry.bindValue(":absoluteFilePath", QString(sqlEscape(tempAttributes.absoluteFilePath)));
         qry.bindValue(":fileName", QString(sqlEscape(tempAttributes.fileName)));
         qry.bindValue(":filePath", QString(sqlEscape(tempAttributes.filePath)));
@@ -76,33 +73,6 @@ bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHas
         qry.bindValue(":owner",QString(tempAttributes.owner));
         qry.bindValue(":reportCreated",QString(currentDateTime.toString(dateFormat)));
 
-        /*          + QString(tempAttributes.absoluteFilePath) + "',"
-                  + "'" + QString(tempAttributes.fileName) + "',"
-                  + "'" + QString(tempAttributes.filePath) + "',"
-                  + "'" + QString(tempAttributes.md5Hash) + "',"
-                  + "'" + QString(tempAttributes.lastModified.toString(dateFormat)) + "',"
-                  + "'" + QString(tempAttributes.lastRead.toString(dateFormat)) + "',"
-                  + "'" + QString(tempAttributes.created.toString(dateFormat)) + "',"
-                  + "'" + QString::number(tempAttributes.isHidden) + "',"
-                  + "'" + QString::number(tempAttributes.size) + "',"
-                  + "'" + QString(tempAttributes.owner) +  "')" ;*/
-
-       /* QSqlQuery query;
-        query.prepare("INSERT INTO contacts (id, first_name, last_name) "
-                      "VALUES (:id, :first_name, :last_name)");
-        query.bindValue(":id", 1001);
-        query.bindValue(":first_name", first_name);
-        query.bindValue(":last_name", last_name);
-        query.exec();
-        */
-
-
-
-        //  qDebug() << sqlCmd;
-       //  qry.prepare( sqlCmd );
-       //tracing insert time
-         QElapsedTimer timer;
-         timer.start();
         if( !qry.exec() )
         {
       qDebug() << qry.lastError();
@@ -110,12 +80,8 @@ bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHas
         }
       //  qDebug() << "insert  time ms = " << timer.elapsed();
 
-        //else
-    // qDebug( "Inserted!" );
-
     } //end foreach
 
-   // db.close();
 
     return 0; //all ok true
 }

@@ -10,9 +10,7 @@ void ListDirectory(QDir dir, bool Recurse);
 void ListContentOfDirectory(QDir dir, bool Recurse, bool Hash);
 QString GetFileMd5hash(QString path);
 QString HashFile(QString path);
-void test(void);
 
-QMultiMap<QString,FileAttributes>   test2(void);
 
 struct FileAttributes
 {
