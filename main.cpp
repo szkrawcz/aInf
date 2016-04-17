@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
    }*/
    db.open();
    db.transaction();
-   QDir dir("C:/");
+   QDir dir("C:/test");
    //QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir,1);
    //qDebug() <<  copyFilesAttHashTableToSqlLite(temp);
    //ListContentOfDirectory(dir, 1,1);
