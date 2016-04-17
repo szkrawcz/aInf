@@ -51,8 +51,13 @@ bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHas
      //   qDebug() << tempAttributes.absoluteFilePath;
   //    qDebug() << "recived file info  " << QString(tempAttributes.absoluteFilePath);
     //  sqlCmd = "INSERT INTO filesScannedTemp ( absoluteFilePath, fileName) VALUES ('"  + tempAttributes.absoluteFilePath + "', 'file.txt')" );
-        sqlCmd = "INSERT INTO filesScannedTemp ( absoluteFilePath,fileName,filePath,md5Hash,lastModified,lastRead,created,isHidden,size,owner) VALUES ('"
-                  + QString(tempAttributes.absoluteFilePath) + "',"
+        sqlCmd = "INSERT INTO filesScannedTemp ( absoluteFilePath,fileName,filePath,md5Hash,lastModified,lastRead,created,isHidden,size,owner) "
+                 "VALUES (:absoluteFilePath,:fileName,:filePath,:md5Hash,:lastModified,:lastRead,:created,:isHidden,:size,:owner)";
+        qry.bindValue(":absoluteFilePath", QString(tempAttributes.absoluteFilePath));
+        qry.bindValue(":fileName", QString(tempAttributes.fileName));
+
+
+        /*          + QString(tempAttributes.absoluteFilePath) + "',"
                   + "'" + QString(tempAttributes.fileName) + "',"
                   + "'" + QString(tempAttributes.filePath) + "',"
                   + "'" + QString(tempAttributes.md5Hash) + "',"
@@ -61,8 +66,20 @@ bool copyFilesAttHashTableToSqlLite(QMultiMap<QString,FileAttributes> fileAttHas
                   + "'" + QString(tempAttributes.created.toString(dateFormat)) + "',"
                   + "'" + QString::number(tempAttributes.isHidden) + "',"
                   + "'" + QString::number(tempAttributes.size) + "',"
-                  + "'" + QString(tempAttributes.owner) +  "')" ;
-      //  qDebug() << sqlCmd;
+                  + "'" + QString(tempAttributes.owner) +  "')" ;*/
+
+       /* QSqlQuery query;
+        query.prepare("INSERT INTO contacts (id, first_name, last_name) "
+                      "VALUES (:id, :first_name, :last_name)");
+        query.bindValue(":id", 1001);
+        query.bindValue(":first_name", first_name);
+        query.bindValue(":last_name", last_name);
+        query.exec();
+        */
+
+
+
+        //  qDebug() << sqlCmd;
          qry.prepare( sqlCmd );
        //tracing insert time
          QElapsedTimer timer;
