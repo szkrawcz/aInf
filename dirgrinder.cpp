@@ -35,7 +35,7 @@ QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash)
             tempFileAttributes.absoluteFilePath = fileInfo.absoluteFilePath();
             tempFileAttributes.fileName = fileInfo.fileName();
             tempFileAttributes.filePath= fileInfo.path();
-            tempFileAttributes.md5Hash = GetFileMd5hash(fileInfo.absoluteFilePath());
+            if (Hash) tempFileAttributes.md5Hash = GetFileMd5hash(fileInfo.absoluteFilePath());
             tempFileAttributes.lastModified  = fileInfo.lastModified();
             tempFileAttributes.lastRead = fileInfo.lastRead();
             tempFileAttributes.created = fileInfo.created();
@@ -143,7 +143,8 @@ QString GetFileMd5hash(QString path)
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
-        QString hash = QCryptographicHash::hash(file.readAll(), QCryptographicHash::Md5).toHex().constData();
+        //reading hash file is limited to 20MB = 41943040 bytes
+        QString hash = QCryptographicHash::hash(file.read(2621440), QCryptographicHash::Md5).toHex().constData();
         file.close();
       //  std::cout <<  hash.toStdString() << "\n";
         return hash;
@@ -218,22 +219,26 @@ void ListFilesInDirectory(QDir dir, bool Hash)
 
 void scanDir(QDir dir,   QSqlDatabase db )
 {
-    dir.setNameFilters(QStringList("*.nut"));
-    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+   // dir.setNameFilters(QStringList("*.nut"));
+    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks| QDir::Hidden );
 
-    qDebug() << "Scanning: " << dir.path();
+
+   // qDebug() << "Scanning: " << dir.path();
 
     QStringList fileList = dir.entryList();
-    QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir.path(),1);
-    qDebug() <<  copyFilesAttHashTableToSqlLite(temp,db);
+    QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir.path(),0);
+    copyFilesAttHashTableToSqlLite(temp,db);
 
-    dir.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+    dir.setFilter(QDir::AllDirs | QDir::Hidden | QDir::NoDotAndDotDot| QDir::NoSymLinks);
     QStringList dirList = dir.entryList();
+
     for (int i=0; i<dirList.size(); ++i)
     {
         QString newPath = QString("%1/%2").arg(dir.absolutePath()).arg(dirList.at(i));
         scanDir(QDir(newPath),db);
     }
+
+
 }
 // ListDirectory list for given path
 void ListDirectory(QDir dir, bool Recurse)
