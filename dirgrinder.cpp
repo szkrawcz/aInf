@@ -217,7 +217,7 @@ void ListFilesInDirectory(QDir dir, bool Hash)
 
 
 
-void scanDir(QDir dir,   QSqlDatabase db )
+void scanDir(QDir dir,   QSqlDatabase db, QDateTime currentDateTime )
 {
    // dir.setNameFilters(QStringList("*.nut"));
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks| QDir::Hidden );
@@ -227,7 +227,7 @@ void scanDir(QDir dir,   QSqlDatabase db )
 
     QStringList fileList = dir.entryList();
     QMultiMap<QString,FileAttributes> temp =  ListFilesInDirectoryTest(dir.path(),0);
-    copyFilesAttHashTableToSqlLite(temp,db);
+    copyFilesAttHashTableToSqlLite(temp,db,currentDateTime);
 
     dir.setFilter(QDir::AllDirs | QDir::Hidden | QDir::NoDotAndDotDot| QDir::NoSymLinks);
     QStringList dirList = dir.entryList();
@@ -235,7 +235,7 @@ void scanDir(QDir dir,   QSqlDatabase db )
     for (int i=0; i<dirList.size(); ++i)
     {
         QString newPath = QString("%1/%2").arg(dir.absolutePath()).arg(dirList.at(i));
-        scanDir(QDir(newPath),db);
+        scanDir(QDir(newPath),db,currentDateTime);
     }
 
 

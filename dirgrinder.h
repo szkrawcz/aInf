@@ -3,7 +3,7 @@
 #include <QtSql>
 
 struct FileAttributes;
-void scanDir(QDir dir, QSqlDatabase db);
+void scanDir(QDir dir,   QSqlDatabase db, QDateTime currentDateTime );
 void ListFilesInDirectory(QDir dir, bool Hash);
 QMultiMap<QString,FileAttributes> ListFilesInDirectoryTest(QDir dir, bool Hash);
 void ListDirectory(QDir dir, bool Recurse);
